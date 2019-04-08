@@ -5,6 +5,7 @@ const logger = require('morgan'); //  在控制台中，显示req请求的信息
 const cors = require('cors'); // 跨域中间件
 const jwt = require('jsonwebtoken'); // 使用jwt签名
 const config = require('./config/index'); // 引入配置
+const passport = require('passport');
 
 // 路由信息（接口地址），存放在routes的根目录
 const indexRouter = require('./routes/manage');
@@ -12,16 +13,23 @@ const loginRouter = require('./routes/manage/login');
 const adminRouter = require('./routes/manage/admin');
 const articleRouter = require('./routes/manage/article');
 const systemRouter = require('./routes/manage/system');
+const uploadRouter = require('./routes/manage/upload');
+const userRouter = require('./routes/web/user');
 
 const app = express();
 
 // 设置superSecret 全局参数
 app.set('superSecret', config.jwtsecret);
 
+// 初始化passport
+// passport的配置
+app.use(passport.initialize());
+require('./utils/passport')(passport);
+
 // 载入中间件
 //  localhost:端口号/api 路径路由定义
 let apiRoutes = express.Router();
-let manageRoutes = express.Router();
+let webRoutes = express.Router();
 apiRoutes.use(function (req, res, next) {
   // 拿取token 数据 按照自己传递方式写
   let token = req.body.token || req.query.token || req.headers['authorization'];
@@ -58,14 +66,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 apiRoutes.use('/admin', adminRouter);
 apiRoutes.use('/article', articleRouter);
 apiRoutes.use('/system', systemRouter);
+apiRoutes.use('/upload', uploadRouter);
+
+webRoutes.use('/article', articleRouter);
+webRoutes.use('/system', systemRouter);
+webRoutes.use('/user', userRouter);
 app.use('/api', apiRoutes);
-app.use('/manage', apiRoutes);
+app.use('/web', webRoutes);
 app.use('/', loginRouter);
 // 注册API路由
 
 app.use(errorHandler);
 
 function errorHandler(err, req, res, next) {
+  console.log("err", err);
   res.status(200).send({code: -1, msg: err.errors[0].message});
 }
 

@@ -3,6 +3,10 @@ module.exports = {
     code: 200,
     msg:'ok!'
   },
+  1001:{
+    code:1001,
+    msg:'已有重复数据！',
+  },
   1002:{
     code:1002,
     msg:'系统繁忙！',
