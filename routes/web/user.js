@@ -14,10 +14,12 @@ router.get("/current",
   passport.authenticate("jwt", { session: false }),
   async (req, res, next) => {
     try {
+      console.log(req.user);
       res.send({code: 200, msg: "ok",data: {
           id: req.user.id,
-          username: req.user.name,
+          username: req.user.username,
           email: req.user.email,
+          avatar: req.user.avatar
         }})
     } catch (e) {
       next(e)

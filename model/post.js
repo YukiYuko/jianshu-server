@@ -1,6 +1,7 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../config/sequelize");
 const admin = require("./admins");
+const category = require("./category");
 
 // 字段类型
 const {
@@ -19,8 +20,11 @@ const Post = sequelize.define(
     // 作者id
     aid: INTEGER,
     readNum: INTEGER,
-    label: STRING
+    label: STRING,
+    images: STRING,
+    desc: STRING
   }
 );
 Post.belongsTo(admin, { foreignKey: 'aid', as: 'author' });
+Post.belongsTo(category, { foreignKey: 'cid', as: 'category' });
 module.exports = Post;

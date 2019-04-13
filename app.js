@@ -15,6 +15,7 @@ const articleRouter = require('./routes/manage/article');
 const systemRouter = require('./routes/manage/system');
 const uploadRouter = require('./routes/manage/upload');
 const userRouter = require('./routes/web/user');
+const commentRouter = require('./routes/web/comments');
 
 const app = express();
 
@@ -58,7 +59,7 @@ apiRoutes.use(function (req, res, next) {
 app.use(cors());
 // 使用 morgan 将请求日志输出到控制台
 app.use(logger('dev'));
-app.use(express.json());
+app.use(express.json({limit: "20mb"}));
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -71,6 +72,7 @@ apiRoutes.use('/upload', uploadRouter);
 webRoutes.use('/article', articleRouter);
 webRoutes.use('/system', systemRouter);
 webRoutes.use('/user', userRouter);
+webRoutes.use('/comment', commentRouter);
 app.use('/api', apiRoutes);
 app.use('/web', webRoutes);
 app.use('/', loginRouter);
