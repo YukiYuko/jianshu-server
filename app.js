@@ -12,6 +12,7 @@ const indexRouter = require('./routes/manage');
 const loginRouter = require('./routes/manage/login');
 const adminRouter = require('./routes/manage/admin');
 const articleRouter = require('./routes/manage/article');
+const webArticleRouter = require('./routes/web/article');
 const systemRouter = require('./routes/manage/system');
 const uploadRouter = require('./routes/manage/upload');
 const userRouter = require('./routes/web/user');
@@ -69,7 +70,7 @@ apiRoutes.use('/article', articleRouter);
 apiRoutes.use('/system', systemRouter);
 apiRoutes.use('/upload', uploadRouter);
 
-webRoutes.use('/article', articleRouter);
+webRoutes.use('/article', webArticleRouter);
 webRoutes.use('/system', systemRouter);
 webRoutes.use('/user', userRouter);
 webRoutes.use('/comment', commentRouter);

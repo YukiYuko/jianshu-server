@@ -12,5 +12,7 @@ router.post("/del", posts.del);
 router.post("/detail", posts.detail);
 // 文章修改
 router.post("/update", posts.update);
+// 文章点赞
+router.post("/like", posts.like);
 
 module.exports = router;

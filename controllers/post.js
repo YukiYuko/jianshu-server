@@ -1,6 +1,7 @@
 const Article = require('../model/post');
 const tips = require("../utils/tips");
 const Admin = require("../model/admins");
+const Like = require("../model/like");
 const Category = require("../model/category");
 const {getClientIp} = require("../utils");
 const fs = require("fs");
@@ -174,11 +175,41 @@ const update = async (req,res,next) => {
   }
 };
 
-
+// 文章点赞和取消点赞
+const like = async (req, res, next) => {
+  try {
+    let {
+      postId,
+      uid,
+      status = 1
+    } = req.body;
+    if (!postId && !uid) {
+      return res.send(tips[4001]);
+    }
+    if (parseInt(status) === 1) {
+      await Like.create({
+        postId,
+        uid
+      });
+    } else {
+      await Like.destroy({
+        where: {
+          postId,
+          uid
+        }
+      });
+    }
+    res.send({...tips[200]});
+  } catch (e) {
+    next(e);
+  }
+};
+//
 module.exports = {
   create,
   list,
   del,
   detail,
-  update
+  update,
+  like
 };

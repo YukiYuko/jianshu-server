@@ -2,6 +2,7 @@ const Sequelize = require("sequelize");
 const sequelize = require("../config/sequelize");
 const admin = require("./admins");
 const category = require("./category");
+const like = require("./like");
 
 // 字段类型
 const {
