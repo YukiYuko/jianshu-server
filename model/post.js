@@ -3,6 +3,7 @@ const sequelize = require("../config/sequelize");
 const admin = require("./admins");
 const category = require("./category");
 const like = require("./like");
+const comments = require("./comments");
 
 // 字段类型
 const {
@@ -28,4 +29,7 @@ const Post = sequelize.define(
 );
 Post.belongsTo(admin, { foreignKey: 'aid', as: 'author' });
 Post.belongsTo(category, { foreignKey: 'cid', as: 'category' });
+// Post.belongsTo(like, { foreignKey: 'id', targetKey: "postId", as: 'like' });
+Post.hasMany(comments);
+Post.hasMany(like);
 module.exports = Post;

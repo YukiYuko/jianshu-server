@@ -3,6 +3,7 @@ const tips = require("../utils/tips");
 const Admin = require("../model/admins");
 const Like = require("../model/like");
 const Category = require("../model/category");
+const Comments = require("../model/comments");
 const {getClientIp} = require("../utils");
 const fs = require("fs");
 const {day_format} = require("../utils/index");
@@ -17,7 +18,8 @@ const create = async (req,res,next) => {
       label,
       aid,
       cid,
-      fileList
+      fileList,
+      desc
     } = req.body;
     if (!title || !content || !label || !cid) {
       res.send({code: 302, msg: "请填写完整的信息", data: null})
@@ -40,7 +42,8 @@ const create = async (req,res,next) => {
         label: label.join(","),
         cid,
         aid: aid || 1,
-        images: images.join(",")
+        images: images.join(","),
+        desc
       });
       res.send({code: 200, msg: "成功", data});
     }
@@ -84,9 +87,15 @@ const list = async (req,res,next) => {
         {
           model: Category, // 关联查询
           as: 'category', // 别名
-          // attributes: ['username']
-          // where: {} // Admin的查询条件
-        }
+        },
+        {
+          model: Comments, // 关联查询
+          as: 'comments', // 别名
+        },
+        {
+          model: Like, // 关联查询
+          as: 'likes', // 别名
+        },
       ]
     });
     let json = JSON.parse(JSON.stringify(data));
@@ -118,19 +127,35 @@ const del = async (req,res,next) => {
 const detail = async (req,res,next) => {
   try {
     let {
-      id
+      id,
+      uid = ""
     } = req.body;
     if (!id) {
       return res.send(tips[4001]);
     }
-    let data = await Article.findById(id, {
-      include: {
+    let include = [
+      {
         model: Admin, // 关联查询
         as: 'author', // 别名
         attributes: ['username']
         // where: {} // Admin的查询条件
       }
+    ];
+    if (uid) {
+      include.push({
+        model: Like, // 关联查询
+        as: 'likes', // 别名
+        attributes: ['id'],
+        required: false,
+        where: {
+          uid
+        }
+      })
+    }
+    let data = await Article.findById(id, {
+      include
     });
+    console.log("data", data)
     // 如果是博客中访问文章详情访问一次加一
     if (req.originalUrl === '/web/article/detail') {
       let readNum = data.readNum || 0;
@@ -155,7 +180,8 @@ const update = async (req,res,next) => {
       content,
       label,
       aid = 1,
-      cid
+      cid,
+      desc
     } = req.body;
     if (!id) {
       res.send({code: 302, msg: "无效的ID", data: null})
@@ -165,7 +191,8 @@ const update = async (req,res,next) => {
       content,
       label: label.join(","),
       cid,
-      aid
+      aid,
+      desc
     },{
       where: {id}
     });
