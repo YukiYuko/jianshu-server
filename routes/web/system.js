@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const Category= require("../../controllers/manage/category");
-const Label = require("../../controllers/manage/label");
-const Banner = require("../../controllers/manage/banner");
-const Link = require("../../controllers/manage/link");
+const Category= require("../../controllers/web/category");
+const Label = require("../../controllers/web/label");
+const Banner = require("../../controllers/web/banner");
+const Link = require("../../controllers/web/link");
 
 // 创建标签
 router.post("/label/create", Label.create);

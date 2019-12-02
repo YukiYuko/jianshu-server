@@ -25,7 +25,10 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+server.listen(port, () => {
+  process.title='程序员成长指北测试进程';
+  console.log('进程id',process.pid)
+});
 server.on('error', onError);
 server.on('listening', onListening);
 

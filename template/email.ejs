@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+    </title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+</head>
+
+<body style="margin:0;padding:0;">
+    <div style="text-align:center;margin:35px 0;">
+        <div style="display:block;margin-top:55px;color:#676767;font-size:15px">ONE · 一个</div>
+        <div style="color:#b0b0b0;font-size:13px;"><%= todayOneData.title %></div>
+        <div style="margin:10px auto;width:85%;color:#5f5e5e;" ><%= todayOneData.vol %></div>
+        <div style="margin:10px auto;width:85%;color:#5f5e5e;" ><%= todayOneData.day %></div>
+        <div style="margin:10px auto;width:85%;color:#5f5e5e;" ><%= todayOneData.date %></div>
+        <div style="margin:10px auto;width:85%;color:#5f5e5e;" >
+            <img src="<%= todayOneData.src %>" alt="">
+        </div>
+        <div style="margin:10px auto;width:85%;" ><%= todayOneData.content %></div>
+        <div style="margin:10px auto;width:85%;">
+            <p>点击以下链接，重置密码</p>
+            <a href="<%= todayOneData.url %>"> <%= todayOneData.url %></a>
+        </div>
+    </div>
+</body>
+
+</html>

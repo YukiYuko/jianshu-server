@@ -1,6 +1,6 @@
-const Admin = require("../model/admins");
+const Admin = require("../../model/admins");
 const jwt = require("jsonwebtoken");
-const config = require('../config'); // 引入配置
+const config = require('../../config'); // 引入配置
 const authenticate = async (req,res,next) => {
   try {
     let {

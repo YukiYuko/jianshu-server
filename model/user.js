@@ -1,9 +1,10 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../config/sequelize");
-
 // 字段类型
 const {
-  STRING
+  STRING,
+  DATE,
+  INTEGER
 } = Sequelize;
 const User = sequelize.define(
   'user',
@@ -11,7 +12,15 @@ const User = sequelize.define(
     username: STRING,
     password: STRING,
     avatar: STRING,
-    email: STRING
+    email: STRING,
+    job: STRING,
+    company: STRING,
+    introduce: STRING,
+    homepage: STRING,
+    resetCode: STRING,
+    resetTime: DATE,
+    admin: INTEGER,
+    editorType: STRING
   },
   {
     hooks: {

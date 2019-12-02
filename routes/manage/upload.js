@@ -22,7 +22,7 @@ let storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     let type = file.mimetype.split("/")[1];
-    cb(null, file.fieldname + '-' + day_format(Date.now()) + '.' + type);
+    cb(null, file.fieldname + '-' + day_format(Date.now(), "YYYY-MM-DD-HH-mm-ss") + '.' + type);
   }
 });
 const upload = multer({ storage });

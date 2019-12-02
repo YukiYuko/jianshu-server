@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const posts = require("../../controllers/post");
+const posts = require("../../controllers/web/post");
 
 /* 发布文章*/
 router.post('/create', posts.create);
@@ -14,5 +14,10 @@ router.post("/detail", posts.detail);
 router.post("/update", posts.update);
 // 文章点赞
 router.post("/like", posts.like);
+// 评论点赞
+router.post("/comment/up", posts.up);
+// 获取随机文章
+router.post("/rand", posts.listRand);
+router.post("/tag/list", posts.TagList);
 
 module.exports = router;

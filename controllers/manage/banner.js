@@ -1,5 +1,5 @@
-const Banner = require('../model/banner');
-const tips = require("../utils/tips");
+const Banner = require('../../model/banner');
+const tips = require("../../utils/tips");
 const {del_controller} = require("./public");
 
 // 列表

@@ -1,9 +1,9 @@
 const dayjs  = require("dayjs");
 
 module.exports =  {
-  day_format(time) {
+  day_format(time, type = "YYYY-MM-DD HH:mm:ss") {
     if(!time)return '';
-    return dayjs(time).format("YYYY-MM-DD-HH-mm-ss")
+    return dayjs(time).format(type)
   },
   getClientIp(req) {
     let ipStr = req.headers['x-forwarded-for'] ||

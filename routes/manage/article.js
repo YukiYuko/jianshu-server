@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const posts = require("../../controllers/post");
+const posts = require("../../controllers/manage/post");
 
 /* 发布文章*/
 router.post('/create', posts.create);
@@ -12,5 +12,6 @@ router.post("/del", posts.del);
 router.post("/detail", posts.detail);
 // 文章修改
 router.post("/update", posts.update);
-
+// 修改文章状态
+router.post("/updateStatus", posts.updateStatus);
 module.exports = router;

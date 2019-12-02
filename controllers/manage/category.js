@@ -1,5 +1,5 @@
-const Category = require('../model/category');
-const tips = require("../utils/tips");
+const Category = require('../../model/category');
+const tips = require("../../utils/tips");
 
 // 创建标签
 const create = async (req,res,next) => {

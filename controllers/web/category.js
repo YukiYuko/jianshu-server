@@ -1,5 +1,5 @@
-const Label = require('../model/label');
-const tips = require("../utils/tips");
+const Category = require('../../model/category');
+const tips = require("../../utils/tips");
 
 // 创建标签
 const create = async (req,res,next) => {
@@ -8,7 +8,7 @@ const create = async (req,res,next) => {
     if (!name) {
       res.send({code:tips[4001].code, msg: tips[4001].msg, data: null})
     } else {
-      const data = await Label.create({
+      const data = await Category.create({
         name
       });
       res.send({code: 200, msg: "成功", data});
@@ -20,7 +20,7 @@ const create = async (req,res,next) => {
 // 标签列表
 const list = async (req,res,next) => {
   try {
-    const data = await Label.findAll();
+    const data = await Category.findAll();
     res.send({code: 200, msg: "成功", data});
   } catch (e) {
     next(e);
@@ -33,7 +33,7 @@ const del = async (req,res,next) => {
     if (!id) {
       res.send({code:tips[4001].code, msg: tips[4001].msg, data: null})
     } else {
-      const data = await Label.destroy({
+      const data = await Category.destroy({
         where: {
           id
         }

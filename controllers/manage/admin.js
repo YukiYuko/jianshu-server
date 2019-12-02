@@ -1,5 +1,5 @@
-const Admin = require('../model/admins');
-const tips = require("../utils/tips");
+const Admin = require('../../model/admins');
+const tips = require("../../utils/tips");
 
 const list = async (req, res, next) => {
   try {
