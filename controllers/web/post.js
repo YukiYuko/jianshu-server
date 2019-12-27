@@ -147,13 +147,14 @@ const list = async (req,res,next) => {
     let json = JSON.parse(JSON.stringify(data));
     let re = json.map((item) => {
       if (item.images) {
-        if (item.images.includes(",")) {
-          return {...item, images: item.images.split(",")}
-        } else {
-          return {...item}
-        }
+        // if (item.images.includes(",")) {
+        //   return {...item, images: item.images.split(",")}
+        // } else {
+        //   return {...item}
+        // }
+        return {...item, images: item.images.split(",")}
       } else {
-        return {...item}
+        return {...item, images: []}
       }
     });
     res.send({code: 200, msg: "成功", data: {data: re, count}});
@@ -166,12 +167,16 @@ const listRand = async (req,res,next) => {
   try {
     let {
       limit = 5,
-      type = 1 //  1为随机文章, 2为最近更新
+      type = 1 //  1为随机文章, 2为最近更新, 3为热门文章
     } = req.body;
-    let order = sequelize.random();
+    let order = Number(type) === 1 ? sequelize.random() : null;
+    let criteria = Number(type) === 3 ? {
+      isHot: 1
+    } : {};
     let data = await Article.findAll({
       order,
       limit,
+      where: criteria,
       include: [
         {
           model: User, // 关联查询
@@ -201,7 +206,7 @@ const listRand = async (req,res,next) => {
       if (item.images) {
         return {...item, images: item.images.split(","), label: []}
       } else {
-        return {...item, label: []}
+        return {...item, label: [], images: []}
       }
     });
     res.send({code: 200, msg: "成功", data: re});

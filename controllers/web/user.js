@@ -176,8 +176,9 @@ const forgot = async (req, res, next) => {
     if (!user) {
       return next(createError(200, "不存在该用户哦"));
     }
+    console.log(__dirname);
     const template = ejs.compile(
-      fs.readFileSync(path.resolve(__dirname, "../template/email.ejs"), "utf8")
+      fs.readFileSync(path.resolve(__dirname, "../../template/email.ejs"), "utf8")
     );
     const todayOneData = await one();
     // Encrypt

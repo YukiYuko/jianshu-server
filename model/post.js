@@ -30,7 +30,11 @@ const Post = sequelize.define(
     status: {
       type: INTEGER,
       defaultValue: 1
-    }
+    },
+    isHot: {
+      type: INTEGER,
+      defaultValue: 0
+    },
   }
 );
 Post.belongsTo(user, { foreignKey: 'aid', as: 'author' });

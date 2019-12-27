@@ -39,7 +39,7 @@ require('./utils/passport')(passport);
 // express-jwt中间件帮我们自动做了token的验证以及错误处理，所以一般情况下我们按照格式书写就没问题，其中unless放的就是你想要不检验token的api。
 const jwtAuth = expressJwt({secret: config.jwtsecret}).unless({
   path: ["/web/user/login", "/web/user/create", "/web/user/list",/\/web\/article/, /\/web\/system/, /\/web\/comment\/list/, /\/web\/comment\/hot/, /\/upload/,
-    "/api/user/login", "/api/user/register", "/web/song/list", "/web/message/list"]
+    "/api/user/login", "/api/user/register", "/web/user/forgot", "/web/user/reset", "/web/song/list", "/web/message/list"]
 });
 app.use(jwtAuth);
 app.use(function (err, req, res, next) {
