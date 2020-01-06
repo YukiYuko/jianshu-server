@@ -244,24 +244,31 @@ const update = async (req,res,next) => {
       id,
       title,
       content,
-      label,
-      aid = 1,
+      tags,
       cid,
-      desc
+      desc,
+      images
     } = req.body;
     if (!id) {
       res.send({code: 302, msg: "无效的ID", data: null})
     }
-    await Article.update({
+    let data = await Article.update({
       title,
       content,
-      label: label.join(","),
       cid,
-      aid,
-      desc
+      desc,
+      images
     },{
       where: {id}
     });
+    // 每次更新都是先删除以前的关联关系，再新增
+    await tag_relationship.destroy({where: {postId:data.id}});
+    for (let item of tags) {
+      await tag_relationship.create({
+        postId: data.id,
+        tagId: item
+      })
+    }
     res.send({...tips[200]});
   } catch (e) {
     next(e);

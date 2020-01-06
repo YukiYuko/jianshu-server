@@ -138,10 +138,12 @@ const update = async (req, res, next) => {
 const list = async (req, res, next) => {
   try {
     let {
-      recommend = 1
+      recommend = 1,
+      uid
     } = req.body;
     let options = {
-      limit: 5
+      limit: 5,
+      attributes: { exclude: ['password'] }
     };
     if (recommend === 1) {
       options.order = sequelize.random();
@@ -150,14 +152,23 @@ const list = async (req, res, next) => {
     let re = [];
     for (let key in data) {
       if (data.hasOwnProperty(key)) {
-        let num = await sequelize.query(
+        // 获取该作者文章字数
+        const num = await sequelize.query(
           `SELECT sum(LENGTH(RTRIM(LTRIM(content)))) as sum FROM posts WHERE aid = ${data[key].id}`,
           {type : sequelize.QueryTypes.SELECT}
         );
+        // 获取该作者粉丝数
         const followNum = await Follow.count({
           where: {aid: data[key].id}
         });
-        re.push({...JSON.parse(JSON.stringify(data[key])), num: num[0].sum || 0, followNum})
+        // 获取当前登录用户有没有关注该作者
+        const is_follow = await Follow.findAll({
+          where: {
+            uid,
+            aid: data[key].id
+          }
+        });
+        re.push({...JSON.parse(JSON.stringify(data[key])), num: num[0].sum || 0, followNum, is_follow: is_follow.length})
       }
     }
     res.send({code: 200, data: re, msg: "成功"})
@@ -261,7 +272,7 @@ const follow = async (req, res, next) => {
       aid,
       status = 1
     } = req.body;
-    if (!uid && !aid) {
+    if (!uid || !aid) {
       return res.send(tips[4001]);
     }
     const data = await Follow.findOne({

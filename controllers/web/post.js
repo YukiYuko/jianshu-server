@@ -25,7 +25,8 @@ const create = async (req,res,next) => {
       images,
       desc,
       is_draft,
-      postId
+      postId,
+      editorType
     } = req.body;
     if (!is_draft && (!title || !content || !tags.length || !cid)) {
       // 如果不是草稿
@@ -57,7 +58,8 @@ const create = async (req,res,next) => {
         aid: aid || 1,
         images,
         desc,
-        status: 1
+        status: 1,
+        editorType
       });
       if (postId) {
         await Draft.destroy({where: {id:postId}});
@@ -352,27 +354,29 @@ const update = async (req,res,next) => {
       title,
       content,
       tags,
-      aid,
       cid,
-      desc
+      desc,
+      images
     } = req.body;
-    if (!id || !aid) {
+    if (!id) {
       res.send({code: 302, msg: "无效的ID", data: null})
     }
-    let data = await Article.update({
+    await Article.update({
       title,
       content,
       cid,
       desc,
-      status: 1
+      status: 1,
+      images
     },{
       where: {id}
     });
+    // 每次更新都是先删除以前的关联关系，再新增
+    await tag_relationship.destroy({where: {postId:id}});
     for (let item of tags) {
-      await tag_relationship.update({
+      await tag_relationship.create({
+        postId: id,
         tagId: item
-      },{
-        where: {postId: data.id}
       })
     }
     res.send({...tips[200]});
