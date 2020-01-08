@@ -13,7 +13,7 @@ const SendEmail = require("../../utils/sendEmail");
 const one = require("../../utils/one");
 const {day_format} = require("../../utils");
 const sequelize = require("../../config/sequelize");
-const { validationResult } = require('express-validator');
+const {validationResult} = require('express-validator');
 
 const ejs = require("ejs"); //ejs模版引擎
 const fs = require("fs"); //文件读写
@@ -21,7 +21,7 @@ const path = require("path"); //路径配置
 
 const Exception = require("../../utils/Exception");
 
-const { SchemaModel, StringType } = require("schema-typed");
+const {SchemaModel, StringType} = require("schema-typed");
 const crpAes = "690517217";
 
 const model = SchemaModel({
@@ -54,11 +54,11 @@ const create = async (req, res, next) => {
       if (!username && !password) {
         return res.send({code: 1010, data: null, msg: "请输入完整信息！"})
       } else {
-        let avatar = gravatar.url(email, { s: '200', r: 'pg', d: 'mm' });
+        let avatar = gravatar.url(email, {s: '200', r: 'pg', d: 'mm'});
         // Decrypt
-        let bytes  = CryptoJS.AES.decrypt(password, crpAes);
+        let bytes = CryptoJS.AES.decrypt(password, crpAes);
         let decryptedPassword = bytes.toString(CryptoJS.enc.Utf8);
-        bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.genSalt(10, function (err, salt) {
           bcrypt.hash(decryptedPassword, salt, async (err, hash) => {
             if (err) {
               throw err;
@@ -103,7 +103,7 @@ const login = async (req, res, next) => {
           id: user.id,
           email: user.email
         };
-        jwt.sign(rule, jwtsecret, { expiresIn: 3600 * 10000 }, (err, token) => {
+        jwt.sign(rule, jwtsecret, {expiresIn: 3600 * 10000}, (err, token) => {
           if (err) {
             throw err;
           }
@@ -123,7 +123,7 @@ const update = async (req, res, next) => {
     if (!params.id) {
       res.send({code: 302, msg: "请传入有效参数", data: null})
     }
-    await User.update(params,{
+    await User.update(params, {
       where: {
         id: params.id
       }
@@ -143,7 +143,7 @@ const list = async (req, res, next) => {
     } = req.body;
     let options = {
       limit: 5,
-      attributes: { exclude: ['password'] }
+      attributes: {exclude: ['password']}
     };
     if (recommend === 1) {
       options.order = sequelize.random();
@@ -155,7 +155,7 @@ const list = async (req, res, next) => {
         // 获取该作者文章字数
         const num = await sequelize.query(
           `SELECT sum(LENGTH(RTRIM(LTRIM(content)))) as sum FROM posts WHERE aid = ${data[key].id}`,
-          {type : sequelize.QueryTypes.SELECT}
+          {type: sequelize.QueryTypes.SELECT}
         );
         // 获取该作者粉丝数
         const followNum = await Follow.count({
@@ -168,7 +168,12 @@ const list = async (req, res, next) => {
             aid: data[key].id
           }
         });
-        re.push({...JSON.parse(JSON.stringify(data[key])), num: num[0].sum || 0, followNum, is_follow: is_follow.length})
+        re.push({
+          ...JSON.parse(JSON.stringify(data[key])),
+          num: num[0].sum || 0,
+          followNum,
+          is_follow: is_follow.length
+        })
       }
     }
     res.send({code: 200, data: re, msg: "成功"})
@@ -246,7 +251,7 @@ const reset = async (req, res, next) => {
       return next(createError(200, "该链接已失效 ，请重新发送邮件。"));
     }
 
-    bcrypt.genSalt(10, function(err, salt) {
+    bcrypt.genSalt(10, function (err, salt) {
       bcrypt.hash(formData.password, salt, async (err, hash) => {
         if (err) {
           throw err;
@@ -272,7 +277,12 @@ const follow = async (req, res, next) => {
       aid,
       status = 1
     } = req.body;
-    if (!uid || !aid) {
+    if (status === 1) {
+      if (!aid) {
+        return res.send(tips[4001]);
+      }
+    }
+    if (!uid) {
       return res.send(tips[4001]);
     }
     const data = await Follow.findOne({
@@ -335,23 +345,25 @@ const getFollowing = async (req, res, next) => {
     let count = 0;
     if (parseInt(type) === 1) {
       // where.aid = aid
-      sql = `SELECT u.* FROM users as u left join follows as f on f.uid = u.id where f.aid = ${aid} LIMIT ${(page-1) * limit}, ${limit}`;
+      sql = `SELECT u.* FROM users as u left join follows as f on f.uid = u.id where f.aid = ${aid} LIMIT ${(page - 1) * limit}, ${limit}`;
       count = await Follow.count({
         where: {aid}
       });
     }
     if (parseInt(type) === 2) {
       // where.uid = aid
-      sql = `SELECT u.* FROM users as u left join follows as f on f.aid = u.id where f.uid = ${aid} LIMIT ${(page-1) * limit}, ${limit}`;
+      sql = `SELECT u.* FROM users as u left join follows as f on f.aid = u.id where f.uid = ${aid} LIMIT ${(page - 1) * limit}, ${limit}`;
       count = await Follow.count({
         where: {uid: aid}
       });
     }
-    let data = await sequelize.query(sql,{type : sequelize.QueryTypes.SELECT});
-    res.send({...tips[200], data: {
-      count,
-      data
-    }});
+    let data = await sequelize.query(sql, {type: sequelize.QueryTypes.SELECT});
+    res.send({
+      ...tips[200], data: {
+        count,
+        data
+      }
+    });
   } catch (e) {
     next(e)
   }
@@ -359,7 +371,7 @@ const getFollowing = async (req, res, next) => {
 // 获取用户收藏数
 const getCollection = async (req, res, next) => {
   try {
-    let {id} = req.query;
+    let {id, page = 1, limit = 10} = req.query;
     if (!id) {
       return res.send({...tips[4001], msg: "参数不全"});
     }
@@ -369,9 +381,18 @@ const getCollection = async (req, res, next) => {
     LEFT JOIN likes AS l ON l.postId = p.id 
     JOIN users as u ON p.aid = u.id 
     WHERE l.uid = ${id}
+    LIMIT ${(page - 1) * limit}, ${limit}
     `;
-    let data = await sequelize.query(sql,{type : sequelize.QueryTypes.SELECT});
-    res.send({...tips[200], data});
+    let count = await Like.count({
+      where: {uid: id}
+    });
+    let data = await sequelize.query(sql, {type: sequelize.QueryTypes.SELECT});
+    res.send({
+      ...tips[200], data: {
+        count,
+        data
+      }
+    });
   } catch (e) {
     next(e);
   }
