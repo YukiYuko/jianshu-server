@@ -135,12 +135,15 @@ const listRand = async (req,res,next) => {
   try {
     let {
       limit = 5,
-      type = 1 //  1为随机文章, 2为最近更新
+      type = 1 //  1为随机文章, 2为最近更新，3为热门文章
     } = req.body;
     let order = sequelize.random();
     let data = await Article.findAll({
       order,
       limit,
+      where: {
+        isHot: type === 3
+      },
       include: [
         {
           model: User, // 关联查询

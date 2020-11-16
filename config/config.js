@@ -10,7 +10,7 @@ if (env === 'dev') {
   MYSQL_CONF = {
     database: 'jianshu',
     username: 'root',
-    password: '',
+    password: '123456',
     host: 'localhost',
     dialect: 'mysql', // 'mysql'|'sqlite'|'postgres'|'mssql'
   };
@@ -27,7 +27,7 @@ if (env === 'production') {
   MYSQL_CONF = {
     database: 'jianshu',
     username: 'root',
-    password: '',
+    password: '123456',
     host: 'localhost',
     dialect: 'mysql', // 'mysql'|'sqlite'|'postgres'|'mssql'
   };

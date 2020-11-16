@@ -5,6 +5,12 @@ module.exports =  {
     if(!time)return '';
     return dayjs(time).format(type)
   },
+  // 时间差
+  time_diff(date1, date2, type = "day") {
+    const d1 = dayjs(date1);
+    const d2 = dayjs(date2);
+    return d2.diff(d1, type);
+  },
   getClientIp(req) {
     let ipStr = req.headers['x-forwarded-for'] ||
       req.ip ||

@@ -4,6 +4,7 @@ const Category= require("../../controllers/web/category");
 const Label = require("../../controllers/web/label");
 const Banner = require("../../controllers/web/banner");
 const Link = require("../../controllers/web/link");
+const Count = require("../../controllers/web/count");
 
 // 创建标签
 router.post("/label/create", Label.create);
@@ -32,5 +33,8 @@ router.post("/link/create", Link.create);
 router.post("/link/list", Link.list);
 // 删除友情链接
 router.post("/link/del", Link.del);
+
+// 获取系统统计
+router.get("/count", Count.count);
 
 module.exports = router;
